@@ -20,8 +20,11 @@ The list of remaining terms are then processed through a Porter Stemming (see: h
 **Requirements**:
 - .NET Core 3.1 or higher.
 
+Option 1:
 Download the latest code from the Master branch and build the solution `FrequencyCalculator.sln`
 >Note: If you don't need to run Unit Tests you can just build the `FrequencyCalculator.csproj` project.
+
+Option 2: Download the latest release [HERE](https://github.com/Talidyn/FrequencyCalculator/releases)
 
 #### Runing the Program
 1. Run the `FrequencyCalculator.exe` executable to start the program.
