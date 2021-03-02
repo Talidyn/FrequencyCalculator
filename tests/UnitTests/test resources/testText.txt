@@ -1,0 +1,7 @@
+﻿Based on the logic, 
+
+this WILL coNTain ? 15 terms'
+
+ in    a *list1 
+
+  fOurTeeN fifTEEn
