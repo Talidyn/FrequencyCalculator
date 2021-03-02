@@ -15,31 +15,27 @@ namespace FrequencyCalculator.UnitTests
 
         readonly string testFilePath = @".\test resources\testtext.txt";
         readonly string nonExistantFilePath = @".\none.txt";
-        readonly string incorrectFileTypePath = @".\test resources\testrtf.rtf";
         #endregion
-
+        
         [Test]
-        public void IngestFile_TextFile_ReturnsExpectedList()
+        public void IngestFile_TextFile_ReturnsExpectedString()
         {
-            List<string> expectedList = new List<string>
-            {
-                "based", "on", "the", "logic,", "this", "will", "contain", "?", "15", "terms'", "in", "a", "*list1", "fourteen", "fifteen"
-            };
-            
-            List<string> assertList = Functions.IngestFile(testFilePath);
+            string ingestedFile = Functions.IngestFile(testFilePath);
+            string expectedString = "alice's adventures in wonderland\n" +
+                "lewis carroll\n" +
+                "\n" +
+                "chapter 1 - down the rabbit-hole";
 
-            Assert.IsNotNull(assertList);
-            Assert.AreEqual(15, assertList.Count());
-            Assert.AreEqual(expectedList, assertList);
+            Assert.IsNotNull(ingestedFile);
+            Assert.AreEqual(expectedString, ingestedFile);
         }
 
         [Test]
         public void IngestFile_DoesNotExist_ReturnsNull()
         {
-            List<string> assertList = Functions.IngestFile(nonExistantFilePath);
+            string file = Functions.IngestFile(nonExistantFilePath);
 
-            Assert.IsFalse(File.Exists(nonExistantFilePath));
-            Assert.IsNull(assertList);
+            Assert.IsNull(file);
         }
 
         [Test]
@@ -63,22 +59,41 @@ namespace FrequencyCalculator.UnitTests
         }
 
         [Test]
-        public void RemoveNonAlphaCharacters_StringOfAlphanumerics_ReturnsOnlyAlphaChars()
+        public void RemoveNonAlphaCharacters_StringOfAlphanumerics_ReturnsOnlyAlphaCharsAndSingleQuotes()
         {
-            List<string> anList = new List<string> { "Th2es4eL@et)ter+sSh} ould*&Be'All\\ThatI sLeftWithNoSpace  s" };
-            List<string> expectedList = new List<string> { "TheseLettersShouldBeAllThatIsLeftWithNoSpaces" };
+            string anString = "'These%letters--should$be`|left'with 'single-quotes'";
+            string expectedString = "'These letters  should be  left'with 'single quotes'";
 
-            List<string> assertList = Functions.RemoveNonAlphaCharacters(anList);
+            string assertString = Functions.RemoveNonAlphaCharacters(anString);
 
-            Assert.NotNull(assertList);
+            Assert.NotNull(assertString);
+            Assert.AreEqual(expectedString, assertString);
+        }
+
+        [Test]
+        public void RemoveNonAlphaCharacters_ListOfAlphanumericWords_ReturnsOnlyAlphaCharacters()
+        {
+            List<string> wordList = new List<string>
+            {
+                "the se", "this's", " ", "be", "th&is", "and", "l7eft ", "?", "down", "down'", "i'm", "myself"
+            };
+            List<string> expectedList = new List<string>
+            {
+                "these", "thiss", "be", "this", "and", "left", "down", "down", "im", "myself"
+            };
+
+            List<string> assertList = Functions.RemoveNonAlphaCharacters(wordList);
+
+            Assert.IsNotNull(assertList);
             Assert.AreEqual(expectedList, assertList);
+            Assert.That(assertList.Count() == 10);
         }
 
         [Test]
         public void StemWords_NonStemmedWords_ReturnsStemmedTerms()
         {
-            List<string> wordList = new List<string> { "jumped", "jumping", "jumps", "legislate", "alice" };
-            List<string> stemmedWordList = new List<string> { "jump", "jump", "jump", "legisl", "alic" };
+            List<string> wordList = new List<string> { "jumped", "jumping", "jumps", "legislate", "alice", "once", "hope" };
+            List<string> stemmedWordList = new List<string> { "jump", "jump", "jump", "legisl", "alice", "onc", "hope" };
 
             List<string> assertList = Functions.StemWords(wordList);
 
@@ -96,6 +111,8 @@ namespace FrequencyCalculator.UnitTests
             Assert.IsNotNull(sortedList);
             Assert.AreEqual("one", sortedList.First().Key);
             Assert.AreEqual(3, sortedList.First().Count());
+            Assert.AreEqual("two", sortedList.ElementAt(1).Key);
+            Assert.AreEqual(2, sortedList.ElementAt(1).Count());
         }
     }
 }

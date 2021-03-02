@@ -1,7 +1,4 @@
-﻿Based on the logic, 
+﻿Alice's Adventures in Wonderland
+Lewis Carroll
 
-this WILL coNTain ? 15 terms'
-
- in    a *list1 
-
-  fOurTeeN fifTEEn
+Chapter 1 - Down the Rabbit-Hole

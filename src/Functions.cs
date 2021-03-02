@@ -10,32 +10,45 @@ namespace FrequencyCalculator
     public static class Functions
     {
         /// <summary>
-        /// Reads in a text file and returns a List of terms.
-        /// Splits on every 'space' and newline.
+        /// Reads in a text file and returns a string in lowercase.
         /// </summary>
-        /// <param name="filePath">Path to the text file to read</param>
+        /// <param name="filePath">Path to the text file</param>
         /// <returns></returns>
-        public static List<string> IngestFile(string filePath)
+        public static string IngestFile(string filePath)
         {
+            filePath = filePath.Trim('\"');
             if (File.Exists(filePath) && Path.GetExtension(filePath).Equals(".txt"))
             {
                 // Read as lowercase to standardize list of terms and increase stop word compatibility.
                 string file = File.ReadAllText(filePath).ToLower();
 
-                List<string> wordList = new List<string>();
-                
-                string[] splitStrings = new string[] {" ", "\n", "\r"};
-                foreach (var item in file.Split(splitStrings, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    wordList.Add(item);
-                }
-
-                return wordList;
+                return file;
             }
             else
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Creates a list of words from the supplied string.
+        /// The words are split on spaces, newlines, and returns.
+        /// Null and Whitespace elements are removed.
+        /// </summary>
+        /// <param name="text">String to create a list from</param>
+        /// <returns></returns>
+        public static List<string> CreateList(string text)
+        {
+            List<string> wordList = new List<string>();
+
+            string[] splitStrings = new string[] {" ", "\n", "\r"};
+            foreach (var item in text.Split(splitStrings, StringSplitOptions.RemoveEmptyEntries))
+            {
+                wordList.Add(item.Trim('\''));
+            }
+            wordList.RemoveAll(string.IsNullOrEmpty);
+
+            return wordList;
         }
 
         /// <summary>
@@ -51,12 +64,27 @@ namespace FrequencyCalculator
             {
                 wordList.RemoveAll(x => x.Equals(line.Trim()));
             }
-
+            
             return wordList;
         }
 
         /// <summary>
+        /// Removes all non-alphabetical characters from the string except for single-quotes.
+        /// </summary>
+        /// <param name="text">String of text to edit</param>
+        /// <returns></returns>
+        public static string RemoveNonAlphaCharacters(string text)
+        {
+            string regex = @"[^a-zA-Z']";
+
+            string alphaText = Regex.Replace(text, regex, " ");
+            
+            return alphaText;
+        }
+
+        /// <summary>
         /// Removes all non-alphabetical characters from the list of terms.
+        /// Null and Whitespace elements are removed.
         /// </summary>
         /// <param name="wordList">List of terms to edit</param>
         /// <returns></returns>
@@ -67,7 +95,7 @@ namespace FrequencyCalculator
 
             foreach (var item in wordList)
             {
-                newList.Add(Regex.Replace(item, regex, ""));
+                newList.Add(Regex.Replace(item, regex, "").Trim());
             }
             newList.RemoveAll(string.IsNullOrEmpty);
 
@@ -119,7 +147,7 @@ namespace FrequencyCalculator
 
             Console.WriteLine("\n{0, -12} | {1, -4}", "Word", "# of Occurances");
             Console.WriteLine("-------------|---------------");
-            foreach (var item in sortedList.ToList().Take(20))
+            foreach (var item in sortedList.Take(20))
             {
                 Console.WriteLine("{0, -12} | {1, -4}", item.Key, item.Count());
             }

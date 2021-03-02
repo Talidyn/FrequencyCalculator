@@ -14,25 +14,30 @@ namespace FrequencyCalculator
             Console.WriteLine("Enter the full path to your text (.txt) file, or enter '0' to quit:");
             string filePath = Console.ReadLine();
 
-            // While loop continues to accept and process documents until exited.
+            // Loop continues to accept and process documents until exited.
             while (filePath != "0")
             {
                 try
                 {
                     List<string> wordList = new List<string>();
 
-                    wordList = Functions.IngestFile(filePath);
+                    string file = Functions.IngestFile(filePath);
 
-                    if (wordList != null)
+                    if (file != null)
                     {
+                        file = Functions.RemoveNonAlphaCharacters(file);
+
+                        wordList = Functions.CreateList(file);
+
                         wordList = Functions.RemoveStopWords(wordList);
 
                         wordList = Functions.RemoveNonAlphaCharacters(wordList);
 
-                        // Removes Stop Words a second time after non-alpha characters are removed to account for grammatical exceptions. (Ex. "however," => "however")
-                        wordList = Functions.RemoveStopWords(wordList);
-
                         wordList = Functions.StemWords(wordList);
+
+                        // Remove stop words one more time to account for possible
+                        // stemmed terms that may exist on the StopWords list.
+                        wordList = Functions.RemoveStopWords(wordList);
 
                         Functions.ComputeFrequencyAndPrintSorted(wordList);
                     }
