@@ -16,7 +16,9 @@ The list of remaining terms are then processed through a Porter Stemming (see: h
 
 ---
 ### How to Run
+
 #### Build
+
 **Requirements**:
 - .NET Core 3.1 or higher.
 
